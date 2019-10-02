@@ -20,14 +20,20 @@ $(SVG:.svg=.pdf): %.pdf: %.svg
 
 
 %.pdf: %.md
-	pandoc $(<) -McodeBlockCaptions=true -MfigureTitle=Figure -MtableTitle=Table -MlistingTitle=Listing -F pandoc-crossref -F pandoc-citeproc -o $(@) --template=$(LATEX_TEMPLATE)
+	pandoc $(<) --pdf-engine=xelatex -McodeBlockCaptions=true -MfigureTitle=Figure -MtableTitle=Table -MlistingTitle=Listing -F pandoc-wrapfig -F pandoc-crossref -F pandoc-citeproc -o $(@) --template=$(LATEX_TEMPLATE)
+
+
+%.tex: %.md
+	pandoc $(<) -McodeBlockCaptions=true -MfigureTitle=Figure -MtableTitle=Table -MlistingTitle=Listing -F pandoc-wrapfig -F pandoc-crossref -F pandoc-citeproc -o $(@) --template=$(LATEX_TEMPLATE)
 
 
 
 
 docx: $(SVG:.svg=.png) $(TARGET:.md=.docx)
 
-pdf: $(TARGET:.md=.pdf) $(SVG:.svg=.pdf)
+pdf: $(SVG:.svg=.pdf) $(TARGET:.md=.pdf)
+
+tex: $(SVG:.svg=.pdf) $(TARGET:.md=.tex)
 
 clean:
 	rm -f $(SVG:.svg=.pdf) $(SVG:.svg=.png) $(TARGET:.md=.pdf) $(TARGET:.md=.docx)
